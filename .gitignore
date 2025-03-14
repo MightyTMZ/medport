@@ -1,4 +1,9 @@
 .idea
 .env
+.venv/
 test-file.txt
 test-data/
+
+__pycache__/
+
+db.sqlite3
