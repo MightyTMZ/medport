@@ -26,7 +26,7 @@ class SimpleReminderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reminder
         fields = [
-            'id'
+            'id',
             'time',
             'repeat_interval',
             'repeat_days',
