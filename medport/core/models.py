@@ -1,5 +1,19 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 import datetime
+
+def validate_color_range(value):
+    if value > 255 or value < 0:
+        raise ValidationError(
+            "Color value must be between 0 and 255"
+        )
+
+class Color(models.Model):
+    name = models.CharField(max_length=255, default="Untitled", blank=True, null=True)
+    red_val = models.IntegerField(validators=[validate_color_range])
+    green_val = models.IntegerField(validators=[validate_color_range])
+    blue_val = models.IntegerField(validators=[validate_color_range])
+
 
 
 class Medication(models.Model):
@@ -12,6 +26,7 @@ class Medication(models.Model):
 
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="media/medication_images")
+    color = models.OneToOneField(Color, on_delete=models.SET_NULL, null=True)
     frequency = models.PositiveSmallIntegerField(help_text="How often to take it (e.g., every 8 hours)")
     frequency_time_interval = models.CharField(
         max_length=20, choices=FREQUENCY_TIME_INTERVALS, default="DAY"
