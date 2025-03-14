@@ -54,6 +54,35 @@ class MedicationSerializer(serializers.ModelSerializer):
         ]
 
 
+class CreateMedicationSerializer(serializers.ModelSerializer):
+    color = ColorSerializer()  # Keeps color as a nested field
+    reminders = SimpleReminderSerializer(many=True)
+
+    class Meta:
+        model = Medication
+        fields = [
+            'name',
+            'image',
+            'color',
+            'frequency',
+            'frequency_time_interval',
+            'reminders',
+        ]
+
+    def create(self, validated_data):
+        color_data = validated_data.pop('color')  # Extract color data
+        reminders_data = validated_data.pop('reminders', [])  # Extract reminders data
+
+        color_instance, _ = Color.objects.get_or_create(**color_data)  # Use existing or create new
+
+        medication = Medication.objects.create(color=color_instance, **validated_data)
+
+        for reminder_data in reminders_data:
+            Reminder.objects.create(medication=medication, **reminder_data)
+
+        return medication
+
+
 class ReminderSerializer(serializers.ModelSerializer):
     medication = MedicationSerializer()
 
@@ -69,4 +98,20 @@ class ReminderSerializer(serializers.ModelSerializer):
             'active',
             'snooze_duration',
         ]
+
+
+class CreateReminderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reminder
+        fields = [
+            'id',
+            'medication',
+            'time',
+            'repeat_interval',
+            'repeat_days',
+            'specific_date',
+            'active',
+            'snooze_duration',
+        ]
+
 
