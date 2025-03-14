@@ -14,6 +14,9 @@ class Color(models.Model):
     green_val = models.IntegerField(validators=[validate_color_range])
     blue_val = models.IntegerField(validators=[validate_color_range])
 
+    def __str__(self):
+        return self.name
+
 
 
 class Medication(models.Model):
@@ -27,6 +30,8 @@ class Medication(models.Model):
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="media/medication_images")
     color = models.OneToOneField(Color, on_delete=models.SET_NULL, null=True)
+    dosage = models.PositiveSmallIntegerField(default=1)
+    unit = models.CharField(max_length=255, help_text="How much do you take per dose? (e.g. pill, teaspoon, etc)", default="_")
     frequency = models.PositiveSmallIntegerField(help_text="How often to take it (e.g., every 8 hours)")
     frequency_time_interval = models.CharField(
         max_length=20, choices=FREQUENCY_TIME_INTERVALS, default="DAY"
@@ -51,6 +56,8 @@ class Reminder(models.Model):
     snooze_duration = models.PositiveSmallIntegerField(
         default=10, help_text="Snooze in minutes (e.g., 10 min snooze)"
     )
+
+    ends_on = models.DateField(blank=True, null=True)
 
     def is_due(self):
         """Check if the reminder is due"""
