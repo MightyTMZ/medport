@@ -30,7 +30,7 @@ import { CalendarIcon, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { HexColorPicker } from "react-colorful";
 import Link from "next/link";
 
-const timeIntervals = ["hours", "days", "weeks", "months"] as const;
+const timeIntervals = ["hours", "days", "week", "month"] as const;
 const daysOfWeek = [
   { label: "Sun", value: "0" },
   { label: "Mon", value: "1" },
