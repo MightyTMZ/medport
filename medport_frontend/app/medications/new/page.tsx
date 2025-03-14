@@ -86,6 +86,8 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
 export default function NewMedication() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [frequency, setFrequency] = useState("1");
+  const [interval, setInterval] = useState("day");
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -293,14 +295,19 @@ export default function NewMedication() {
                     min="1"
                     {...form.register("frequency", { valueAsNumber: true })}
                     className="mt-1"
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      setFrequency(e.target.value.toString());
+                    }}
                   />
                 </div>
                 <div>
                   <Label htmlFor="frequencyInterval">Interval</Label>
                   <Select
-                    onValueChange={(value) =>
-                      form.setValue("frequencyInterval", value as any)
-                    }
+                    onValueChange={(value) => {
+                      form.setValue("frequencyInterval", value as any);
+                      setInterval(value.toString());
+                    }}
                     defaultValue={form.getValues("frequencyInterval")}
                   >
                     <SelectTrigger>
@@ -315,7 +322,12 @@ export default function NewMedication() {
                     </SelectContent>
                   </Select>
                 </div>
+                <p>
+                  {frequency}x per{" "}
+                  <span style={{ textTransform: "lowercase" }}>{interval}</span>
+                </p>
               </div>
+              <hr />
             </div>
 
             {/* Reminders */}
